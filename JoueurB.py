@@ -3,12 +3,23 @@ import Joueur
 
 class JoueurB(Joueur.Joueur):
     
-    def jouer(self):
-        if(self.carte > 5):
-            return 0
+    
+    def passer(self):
+            return 0 
+    
+    def suivre(self, mise):
+        if(mise <= self.solde):
+            self.solde -= mise
+            return mise
         else:
-            self.solde -= 1
-            return 1
+            return 0
+    
+    
+    def jouer(self, mise):
+        if(self.carte < 5 or mise >self.solde):
+            return self.passer()
+        else:
+            return self.suivre(mise)
            
         
         
