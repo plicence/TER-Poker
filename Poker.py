@@ -1,55 +1,132 @@
 import JoueurA
 import JoueurB
+import Interface
 import random
 from time import time
 
+import pygame # a supprimer
+	
+class Jeu:
+	def __init__(self):
+		self.joueurA=JoueurA.JoueurA()
+		self.joueurB=JoueurB.JoueurB()
+		random.seed(time())
+		self.carteA=0
+		self.carteB=0
+		self.pot=0
+		#aff=-1
+		
+	def charge_interface(self):
+		"""initialise la fenetre"""
+		#####Toujours appeler pygame.quit() avant la fin du programme si cette fonction est utilisée#####
+		self.aff=Interface.Interface(self)
+	
+	def tirer(self):
+		"""prends la mise de départ et distribue les cartes"""
+		self.pot = self.joueurA.mise_depart() + self.joueurB.mise_depart() # Les joueurs A et B font leurs mises de départ		
+		self.carteA = random.randint(1, 10) #La carte du joueur A est tirée
+		self.carteB = random.randint(1, 10)#La carte du joueur B est tirée
+		self.joueurA.recevoir_carte(self.carteA) #Le joueur A reçoit sa carte
+		self.joueurB.recevoir_carte(self.carteB) #Le joueur B reçoit sa carte
+	
+	def jeu_simple(self):
+		"""jeu avec affichage en console"""
+		self.tirer()
+		print("carteA : " + str(self.carteA))
+		print("carteB : " + str(self.carteB))
 
-joueurA = JoueurA.JoueurA()
-joueurB = JoueurB.JoueurB()
+		actionA = self.joueurA.jouer() #Le joueur A joue
 
-pot = joueurA.mise_depart() + joueurB.mise_depart() # Les joueurs A et B font leurs mises de départ
-random.seed(time())
-carteA = random.randint(1, 10) #La carte du joueur A est tirée
-random.seed(time())
-carteB = random.randint(1, 10)#La carte du joueur B est tirée
-print("carteA : " + str(carteA))
-print("carteB : " + str(carteB))
-joueurA.recevoir_carte(carteA) #Le joueur A reçoit sa carte
-joueurB.recevoir_carte(carteB) #Le joueur B reçoit sa carte
-
-actionA = joueurA.jouer() #Le joueur A joue
-
-if(actionA > 0): # S'il mise on ajoute au pot
+		if(actionA > 0): # S'il mise on ajoute au pot
+			self.pot += actionA
+			print("A mise" + str(actionA) )
+			actionB = self.joueurB.jouer(actionA) # Le joueur B joue
     
-    pot += actionA
-    print("A:" + str(actionA) )
-    actionB = joueurB.jouer(actionA) # Le joueur B joue
-    
-    if(actionB == 0):
-        joueurA.solde += pot # S'il passe le joueur A gagne 
+			if(actionB == 0):
+				print("B passe")
+				self.joueurA.solde += self.pot # S'il passe le joueur A gagne 
         
-    else: # S'il mise on vérifie qui a la plus grande valeur de carte
+			else: # S'il mise on vérifie qui a la plus grande valeur de carte
         
-        pot += actionB
-        print("B:" + str(actionB))
+				self.pot += actionB
+				print("B mise" + str(actionB))
  
-        if (carteA > carteB):
-            joueurA.solde += pot #Le joueur A gagne
-        elif (carteB > carteA):
-            joueurB.solde += pot #Le joueur B gagne
-        else: #Si les joueurs ont une égalité, chacun reprend son argent
-            joueurA.solde += (actionA + 1)
-            joueurB.solde += (actionB + 1)    
+				if (self.carteA > self.carteB):
+					self.joueurA.solde += self.pot #Le joueur A gagne
+				elif (self.carteB > self.carteA):
+					self.joueurB.solde += self.pot #Le joueur B gagne
+				else: #Si les joueurs ont une égalité, chacun reprend son argent
+					self.joueurA.solde += (actionA + 1)
+					self.joueurB.solde += (actionB + 1)    
             
-else:
-    joueurB.solde += pot #Si le joueur A passe, le joueur B gagne
+		else:
+			self.joueurB.solde += self.pot #Si le joueur A passe, le joueur B gagne
 
+		print("Pot: " + str(self.pot))
+		print("Solde A: " + str(self.joueurA.solde))
+		print("Solde B: " + str(self.joueurB.solde))
+	
+	def jeu_interface(self):
+		"""Jeu avec interface graphique"""
+		self.tirer()
+		self.aff.charge_cartes()
+		self.aff.place_cartes()
+		actionA = self.joueurA.jouer() #Le joueur A joue
 
+		if(actionA > 0): # S'il mise on ajoute au pot
+			self.pot += actionA
+			print("A mise" + str(actionA) )
+			actionB = self.joueurB.jouer(actionA) # Le joueur B joue
+    
+			if(actionB == 0):
+				print("B passe")
+				self.joueurA.solde += self.pot # S'il passe le joueur A gagne 
+        
+			else: # S'il mise on vérifie qui a la plus grande valeur de carte
+        
+				self.pot += actionB
+				print("B mise " + str(actionB))
+ 
+				if (self.carteA > self.carteB):
+					self.joueurA.solde += self.pot #Le joueur A gagne
+				elif (self.carteB > self.carteA):
+					self.joueurB.solde += self.pot #Le joueur B gagne
+				else: #Si les joueurs ont une égalité, chacun reprend son argent
+					self.joueurA.solde += (actionA + 1)
+					self.joueurB.solde += (actionB + 1)    
+            
+		else:
+			self.joueurB.solde += self.pot #Si le joueur A passe, le joueur B gagne
 
+		print("Pot: " + str(self.pot))
+		print("Solde A: " + str(self.joueurA.solde))
+		print("Solde B: " + str(self.joueurB.solde))
 
-print("Pot: " + str(pot))
-print("Solde A: " + str(joueurA.solde))
-print("Solde B: " + str(joueurB.solde))
+		self.aff.retourne_cartes()
+		
+	def jeu_simple_boucle(self, n):
+		"""jeu en console répété n fois sans réinitialisation des joueurs (les soldes sont conservés après chaque tour de boucle)"""
+		for i in range(1,n):
+			self.jeu_simple()
+			
+	def jeu_interface_boucle(self, n):
+		"""jeu avec interface répété n fois sans réinitialisation des joueurs"""
+		self.charge_interface()
+		for i in range(1,n):
+			self.jeu_interface()
+		pygame.quit()
+	
+	def verif_solde(self):
+		"""retourne 1 si A a perdu, 2 si b a perdu, 0 si les deux joueurs peuvent continuer"""
+		if (self.joueurA.solde == 0):
+			return 1
+		elif(self.joueurB.solde == 0):
+			return 2
+		else:
+			return 0
+			
+def main():
+	j=Jeu()
+	j.jeu_interface_boucle(10)
 
-if (joueurA.solde == 0 or joueurB == 0):
-    exit()
+main()
