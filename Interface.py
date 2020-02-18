@@ -18,7 +18,7 @@ class Interface:
 		coul_alice=random.randint(0,3)
 		coul_bob=random.randint(0,3)
 		if(coul_bob==coul_alice):
-			coul_bob+=(coul_bob+random.randint(1,3))%4
+			coul_bob=(coul_bob+random.randint(1,3))%4
 		self.carte_alice.charge_image(self.table.carteA,coul_alice)
 		self.carte_bob.charge_image(self.table.carteB,coul_bob)
 

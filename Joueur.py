@@ -4,6 +4,7 @@
 class Joueur:
      
     
+    
     def __init__(self):
         self.solde = 1000
         self.carte = 1
@@ -13,7 +14,9 @@ class Joueur:
         return 1
     
     def recevoir_carte(self, carte):
+        self.cartePrecedente = self.carte
         self.carte = carte
+
         
         
         
