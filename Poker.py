@@ -138,9 +138,9 @@ class Jeu:
 	def jeu_interface_qlearning(self):
 		"""Jeu avec interface graphique"""
 		self.tirer()
-		self.aff.charge_cartes()
-		self.aff.place_cartes()
-		ac = self.joueurA.takeAction(0.1) #Le joueur A joue
+		#self.aff.charge_cartes()
+		#self.aff.place_cartes()
+		ac = self.joueurA.takeAction(0) #Le joueur A joue
 		actionA = self.joueurA.ActionsVal(ac) # Le joueurA mise une somme(0, 1, 2, 4) par rapport à l'action effectuée
 		if(actionA > 0): # S'il mise on ajoute au pot
 			self.pot += actionA
@@ -178,7 +178,7 @@ class Jeu:
 		carteBTour1 = self.joueurB.carte
 		
 		recompenseA = self.joueurA.GetRecompense()
-		self.aff.retourne_cartes()
+		#self.aff.retourne_cartes()
 
 		#TOUR T+1: on définit quelle serait l'action suivante
 		
@@ -186,7 +186,7 @@ class Jeu:
 		ac1 = self.joueurA.takeAction(0) #Le joueur A joue
 		
 		#Q-Function
-		self.joueurA.grid[carteATour1 - 1][ac] = self.joueurA.grid[carteATour1 - 1][ac] + 0.1 * (recompenseA + 0.85 * self.joueurA.grid[self.joueurA.carte - 1][ac1] - self.joueurA.grid[carteATour1 - 1][ac])
+		#self.joueurA.grid[carteATour1 - 1][ac] = self.joueurA.grid[carteATour1 - 1][ac] + 0.01 * (recompenseA + 0.1 * self.joueurA.grid[self.joueurA.carte - 1][ac1] - self.joueurA.grid[carteATour1 - 1][ac])
 		
 		#Affichage la QGrid
 		
@@ -195,17 +195,26 @@ class Jeu:
 		
 	def jeu_interface_boucle_qlearning(self, n):
 		"""jeu avec interface répété n fois sans réinitialisation des joueurs"""
-		self.charge_interface()
-		for i in range(1,n):
+		#self.charge_interface()
+		i = 0
+		while(self.joueurA.solde > 0 and self.joueurB.solde >0):
 			self.jeu_interface_qlearning()
-			
-		pygame.quit()
+			i = i +1
+		print(i)
+		if(self.joueurA.solde > 0):
+			return 1
+		else: 
+			return 0
+				
+		
+		#pygame.quit()
 			
 def main():
-
-	j=Jeu()
-	j.jeu_interface_boucle_qlearning(10)
-	j.joueurA.ecrit_grille()
+	res = 0
+	for i in range(1, 10):
+		j=Jeu()
+		res += j.jeu_interface_boucle_qlearning(10000)
+		j.joueurA.ecrit_grille()
 	#j.jeu_interface_boucle(5)
-	
+	print(str(res))
 main()

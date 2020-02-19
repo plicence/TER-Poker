@@ -61,14 +61,14 @@ class JoueurA(Joueur.Joueur):
             self.solde -= 2
             return 2
         else:
-            return 0
+            return self.miser1()
     
     def miser4(self):
         if(self.solde - 4 > 0):
             self.solde -= 4
             return 4
         else:
-            return 0
+            return self.miser2()
     
     def passer(self):
         return 0
