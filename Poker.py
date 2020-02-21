@@ -144,17 +144,17 @@ class Jeu:
 		actionA = self.joueurA.ActionsVal(ac) # Le joueurA mise une somme(0, 1, 2, 4) par rapport à l'action effectuée
 		if(actionA > 0): # S'il mise on ajoute au pot
 			self.pot += actionA
-			print("A mise" + str(actionA) )
+			#print("A mise" + str(actionA) )
 			actionB = self.joueurB.jouer(actionA) # Le joueur B joue
     
 			if(actionB == 0):
-				print("B passe")
+				#print("B passe")
 				self.joueurA.ActualiserSolde(self.pot) # S'il passe le joueur A gagne 
         
 			else: # S'il mise on vérifie qui a la plus grande valeur de carte
         
 				self.pot += actionB
-				print("B mise " + str(actionB))
+				#print("B mise " + str(actionB))
  
 				if (self.carteA > self.carteB):
 					self.joueurA.ActualiserSolde(self.pot) #Le joueur A gagne
@@ -165,14 +165,14 @@ class Jeu:
 					self.joueurB.solde += (actionB + 1)    
             
 		else:
-			print("Joueur A passe")
+			#print("Joueur A passe")
 			self.joueurB.solde += self.pot #Si le joueur A passe, le joueur B gagne
 
-		print("Pot: " + str(self.pot))
+		"""print("Pot: " + str(self.pot))
 		print("Carte A : " + str(self.joueurA.carte))
 		print("Carte B : " + str(self.joueurB.carte))
 		print("Solde A: " + str(self.joueurA.solde))
-		print("Solde B: " + str(self.joueurB.solde))
+		print("Solde B: " + str(self.joueurB.solde))"""
 		
 		carteATour1 = self.joueurA.carte
 		carteBTour1 = self.joueurB.carte
@@ -186,12 +186,12 @@ class Jeu:
 		ac1 = self.joueurA.takeAction(0) #Le joueur A joue
 		
 		#Q-Function
-		#self.joueurA.grid[carteATour1 - 1][ac] = self.joueurA.grid[carteATour1 - 1][ac] + 0.01 * (recompenseA + 0.1 * self.joueurA.grid[self.joueurA.carte - 1][ac1] - self.joueurA.grid[carteATour1 - 1][ac])
+		self.joueurA.grid[carteATour1 - 1][ac] = self.joueurA.grid[carteATour1 - 1][ac] + 0.000085 * (recompenseA + 0.0001 * self.joueurA.grid[self.joueurA.carte - 1][ac1] - self.joueurA.grid[carteATour1 - 1][ac])
 		
 		#Affichage la QGrid
 		
-		for s in range(0, 10):
-			print(self.joueurA.grid[s])
+		"""for s in range(0, 10):
+			print(self.joueurA.grid[s])"""
 		
 	def jeu_interface_boucle_qlearning(self, n):
 		"""jeu avec interface répété n fois sans réinitialisation des joueurs"""
@@ -200,20 +200,23 @@ class Jeu:
 		while(self.joueurA.solde > 0 and self.joueurB.solde >0):
 			self.jeu_interface_qlearning()
 			i = i +1
-		print(i)
 		if(self.joueurA.solde > 0):
+			print("JoueurA gagne")
+		print(i)
+		return i
+		"""if(self.joueurA.solde > 0):
 			return 1
 		else: 
-			return 0
+			return 0"""
 				
 		
 		#pygame.quit()
 			
 def main():
-	res = 0
-	for i in range(1, 10):
+	res = 3001
+	for i in range(0, 50):	#while(res > 3000):
 		j=Jeu()
-		res += j.jeu_interface_boucle_qlearning(10000)
+		res = j.jeu_interface_boucle_qlearning(10000)
 		j.joueurA.ecrit_grille()
 	#j.jeu_interface_boucle(5)
 	print(str(res))
