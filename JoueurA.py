@@ -1,7 +1,7 @@
 import Joueur
 from enum import Enum
 import random
-from Crypto.Random.random import randint
+from random import randint
 import numpy as np
 
 class JoueurA(Joueur.Joueur):

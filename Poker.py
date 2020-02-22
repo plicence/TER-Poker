@@ -133,7 +133,61 @@ class Jeu:
 		else:
 			return 0
 			
+	def jeu_simple_qlearning(self):
+		"""Jeu qlearning sans interface graphique"""
+		
+	### Distribution des cartes ###
+		self.tirer()
+		
+	### A Joue ###
+		ac = self.joueurA.takeAction(0.1) #Le joueur A joue
+		actionA = self.joueurA.ActionsVal(ac) # Le joueurA mise une somme(0, 1, 2, 4) par rapport à l'action effectuée
+		if(actionA > 0): # S'il mise on ajoute au pot
+			self.pot += actionA
+    
+		### B joue ###
+			self.joueurB.choisir(self.pot)
+			actionB = self.joueurB.jouer(actionA)
+			if(actionB == 0):### B Passe ###
+				self.joueurA.ActualiserSolde(self.pot)
+        
+			else:### B suis ###
+				self.pot += actionB
+ 
+			### On retourne les cartes ###
+				if (self.carteA > self.carteB):
+					self.joueurA.ActualiserSolde(self.pot)
+					self.joueurB.fin_tour(0)
+				elif (self.carteB > self.carteA):
+					self.joueurB.fin_tour(1)
+				else:
+					self.joueurA.ActualiserSolde(actionA + 1)
+					self.joueurB.fin_tour(2)   
+            
+		else:
+			self.joueurB.fin_tour(1)
+		
+		
+		###trucs de qlearning pour le joueur a###
+		carteATour1 = self.joueurA.carte
+		carteBTour1 = self.joueurB.carte
+		
+		recompenseA = self.joueurA.GetRecompense()
+
+		#TOUR T+1: on définit quelle serait l'action suivante
+		
+		self.tirer_Sans_Mise()
+		ac1 = self.joueurA.takeAction(0) #Le joueur A joue
+		
+		#Q-Function
+		self.joueurA.grid[carteATour1 - 1][ac] = self.joueurA.grid[carteATour1 - 1][ac] + 0.1 * (recompenseA + 0.85 * self.joueurA.grid[self.joueurA.carte - 1][ac1] - self.joueurA.grid[carteATour1 - 1][ac])
 			
+	def jeu_simple_boucle_qlearning(self, n):
+		""""L'affichage des résltats se fait hors de la fonction de jeu car il n'y a que le resultat final qui nous interesse"""
+		for i in range(1,n):
+			self.jeu_simple_qlearning()		
+		print("Solde A: " + str(self.joueurA.solde))
+		print("Solde B: " + str(self.joueurB.solde))
 			
 	def jeu_interface_qlearning(self):
 		"""Jeu avec interface graphique"""
@@ -204,7 +258,7 @@ class Jeu:
 def main():
 
 	j=Jeu()
-	j.jeu_interface_boucle_qlearning(10)
+	j.jeu_simple_boucle_qlearning(10)
 	j.joueurA.ecrit_grille()
 	#j.jeu_interface_boucle(5)
 	
