@@ -14,8 +14,17 @@ class Jeu:
 		self.carteA=0
 		self.carteB=0
 		self.pot=0
+		self.winA=0
+		self.winB=0
+		self.equal=0
 		#aff=-1
 		
+	def get_WinA(self):
+		return self.winA
+
+	def get_WinB(self):
+		return self.winB
+
 	def charge_interface(self):
 		"""initialise la fenetre"""
 		#####Toujours appeler pygame.quit() avant la fin du programme si cette fonction est utilisée#####
@@ -137,6 +146,11 @@ class Jeu:
 			
 	def jeu_interface_qlearning(self):
 		"""Jeu avec interface graphique"""
+
+		print("WINA",self.winA)
+		print("WINB",self.winB)
+		print("EQUAL",self.equal)
+
 		self.tirer()
 		#self.aff.charge_cartes()
 		#self.aff.place_cartes()
@@ -149,7 +163,8 @@ class Jeu:
     
 			if(actionB == 0):
 				#print("B passe")
-				self.joueurA.ActualiserSolde(self.pot) # S'il passe le joueur A gagne 
+				self.joueurA.ActualiserSolde(self.pot) # S'il passe le joueur A gagne
+				self.winA += 1
         
 			else: # S'il mise on vérifie qui a la plus grande valeur de carte
         
@@ -158,26 +173,33 @@ class Jeu:
  
 				if (self.carteA > self.carteB):
 					self.joueurA.ActualiserSolde(self.pot) #Le joueur A gagne
+					self.winA += 1
 				elif (self.carteB > self.carteA):
 					self.joueurB.solde += self.pot #Le joueur B gagne
+					self.winB += 1
 				else: #Si les joueurs ont une égalité, chacun reprend son argent
 					self.joueurA.ActualiserSolde(actionA + 1)
-					self.joueurB.solde += (actionB + 1)    
+					self.joueurB.solde += (actionB + 1)
+					self.equal += 1    
             
 		else:
-			#print("Joueur A passe")
+			print("Joueur A passe")
 			self.joueurB.solde += self.pot #Si le joueur A passe, le joueur B gagne
+			self.winB += 1
 
-		"""print("Pot: " + str(self.pot))
+		print("Pot: " + str(self.pot))
 		print("Carte A : " + str(self.joueurA.carte))
 		print("Carte B : " + str(self.joueurB.carte))
 		print("Solde A: " + str(self.joueurA.solde))
-		print("Solde B: " + str(self.joueurB.solde))"""
+		print("Solde B: " + str(self.joueurB.solde))
 		
 		carteATour1 = self.joueurA.carte
 		carteBTour1 = self.joueurB.carte
 		
 		recompenseA = self.joueurA.GetRecompense()
+		"""if (recompenseA > 0):
+			print(recompenseA)
+			quit()"""
 		#self.aff.retourne_cartes()
 
 		#TOUR T+1: on définit quelle serait l'action suivante
@@ -214,7 +236,7 @@ class Jeu:
 			
 def main():
 	res = 3001
-	for i in range(0, 50):	#while(res > 3000):
+	for i in range(0, 1):	#while(res > 3000):
 		j=Jeu()
 		res = j.jeu_interface_boucle_qlearning(10000)
 		j.joueurA.ecrit_grille()
