@@ -17,6 +17,7 @@ class Jeu:
 		self.winA=0
 		self.winB=0
 		self.equal=0
+		self.list=[]
 		#aff=-1
 		
 	def get_WinA(self):
@@ -147,15 +148,24 @@ class Jeu:
 	def jeu_interface_qlearning(self):
 		"""Jeu avec interface graphique"""
 
-		print("WINA",self.winA)
-		print("WINB",self.winB)
-		print("EQUAL",self.equal)
+		#print("WINA",self.winA)
+		#print("WINB",self.winB)
+		#print("EQUAL",self.equal)
 
 		self.tirer()
 		#self.aff.charge_cartes()
 		#self.aff.place_cartes()
 		ac = self.joueurA.takeAction(0) #Le joueur A joue
 		actionA = self.joueurA.ActionsVal(ac) # Le joueurA mise une somme(0, 1, 2, 4) par rapport à l'action effectuée
+		if (actionA == 0):
+			self.list.append("0")
+		elif (actionA == 1):
+			self.list.append("1")
+		elif (actionA == 2):
+			self.list.append("2")
+		elif (actionA == 4):
+			self.list.append("4")
+	
 		if(actionA > 0): # S'il mise on ajoute au pot
 			self.pot += actionA
 			#print("A mise" + str(actionA) )

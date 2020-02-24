@@ -8,8 +8,8 @@ class Graph:
 		self.WinA = 0
 		self.WinB = 0
 
-	def graph(self):
-
+	def graphrond(self):
+		plt.title("Nombres de manches gagnes par Joueur")
 		self.Jeu.jeu_interface_boucle_qlearning(10000)
 		plt.text(-1.5, 1, self.Jeu.winA+self.Jeu.winB+self.Jeu.equal )
 		name = ['Win A', 'Win B', 'Equal']
@@ -18,8 +18,18 @@ class Graph:
 		plt.axis('equal')
 		plt.show()
 
+	def graphhist(self):
+		plt.title("Nombre de mises differentes du Joueur A")
+		self.Jeu.jeu_interface_boucle_qlearning(10000)
+		plt.hist(self.Jeu.list, bins = 4, color = 'yellow', edgecolor = 'red')
+		plt.xlabel('Mise')
+		plt.ylabel('Nombres')
+		plt.show()
+
+
 def main():
-	g=Graph()
-	g.graph()
+	g = Graph()
+	g.graphrond()
+	g.graphhist()
 
 main()
