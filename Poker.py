@@ -242,4 +242,4 @@ def main():
 		j.joueurA.ecrit_grille()
 	#j.jeu_interface_boucle(5)
 	print(str(res))
-main()
+#main()
