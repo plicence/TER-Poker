@@ -23,6 +23,7 @@ class JoueurB(Joueur.Joueur):
 			return 0 
     
 	def suivre(self, mise):
+		self.solde-=mise
 		return mise
 	
 	def jouer(self, mise):
@@ -60,15 +61,15 @@ class JoueurB(Joueur.Joueur):
 		self.last_action=current_action
 		self.last_carte=current_carte
 	
-	def fin_tour(self, resultat):
+	def fin_tour(self, pot, resultat):
 		if(resultat==0):
 			self.gain=-self.mise_tour
 		elif(resultat==1):
 			self.gain=self.mise_tour
-			self.solde+=2*self.mise_tour
+			self.solde+=pot
 		else:
 			self.gain=0
-			self.solde+=self.mise_tour
+			self.solde+=int(pot/2)
 		self.q_function();
 	
 	def affiche_table(self):
