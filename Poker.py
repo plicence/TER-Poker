@@ -146,7 +146,7 @@ class Jeu:
 			self.pot += actionA
     
 		### B joue ###
-			self.joueurB.choisir(self.pot)
+			self.joueurB.choisir(actionA)
 			actionB = self.joueurB.jouer(actionA)
 			if(actionB == 0):### B Passe ###
 				self.joueurA.ActualiserSolde(self.pot)
@@ -161,11 +161,22 @@ class Jeu:
 				elif (self.carteB > self.carteA):
 					self.joueurB.fin_tour(1)
 				else:
-					self.joueurA.ActualiserSolde(actionA + 1)
-					self.joueurB.fin_tour(2)   
+					self.joueurA.ActualiserSolde(actionA+1)
+					self.joueurB.fin_tour(2)   #a vérifier
             
 		else:
+			actionB=0
+			self.joueurB.mise_tour=0
 			self.joueurB.fin_tour(1)
+		
+		
+		print("Pot: " + str(self.pot))
+		print("Carte A : " + str(self.joueurA.carte))
+		print("Carte B : " + str(self.joueurB.carte))
+		print("Mise A : " + str(actionA))
+		print("Mise B : " + str(actionB))
+		print("Solde A: " + str(self.joueurA.solde))
+		print("Solde B: " + str(self.joueurB.solde))
 		
 		
 		###trucs de qlearning pour le joueur a###
@@ -260,6 +271,5 @@ def main():
 	j=Jeu()
 	j.jeu_simple_boucle_qlearning(10)
 	j.joueurA.ecrit_grille()
-	#j.jeu_interface_boucle(5)
 	
 main()
