@@ -197,7 +197,13 @@ class Jeu:
 	def jeu_simple_boucle_qlearning(self, n):
 		""""L'affichage des résltats se fait hors de la fonction de jeu car il n'y a que le resultat final qui nous interesse"""
 		for i in range(1,n):
-			self.jeu_simple_qlearning()		
+			self.jeu_simple_qlearning()
+			if(self.joueurA.solde<=0):
+				print("Alice n'a plus de jetons pour continuer")
+				return 0
+			if(self.joueurB.solde<=0):
+				print("Bob n'a plus de jetons pour continuer")
+				return 0
 		print("Solde A: " + str(self.joueurA.solde))
 		print("Solde B: " + str(self.joueurB.solde))
 			
@@ -270,7 +276,7 @@ class Jeu:
 def main():
 
 	j=Jeu()
-	j.jeu_simple_boucle_qlearning(10000)
+	j.jeu_simple_boucle_qlearning(2000)
 	j.joueurA.ecrit_grille()
 	
 main()
