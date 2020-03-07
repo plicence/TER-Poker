@@ -276,7 +276,6 @@ class Jeu:
 def main():
 
 	j=Jeu()
-	j.joueurB.lire_table()
 	j.jeu_simple_boucle_qlearning(2000)
 	j.joueurA.ecrit_grille()
 	j.joueurB.ecrire_table()

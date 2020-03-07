@@ -9,6 +9,8 @@ class JoueurB(Joueur.Joueur):
 		[[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0]],
 		[[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0]],
 		[[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0]]]
+		self.lire_table()
+		self.affiche_table()
 		self.action=1
 		self.gain=0
 		self.epsilon=0.1
@@ -50,12 +52,14 @@ class JoueurB(Joueur.Joueur):
 	
 	def q_function(self):
 		current_mise=self.mise_tour
+		if current_mise==4:
+			current_mise=3
 		current_action=self.action
 		current_carte=self.carte
 		
-		last_q_table=self.q_table[self.last_mise-1][self.last_carte-1][self.last_action]
-		current_q_table=self.q_table[current_mise-1][current_carte-1][current_action]
-		self.q_table[self.last_mise-1][self.last_carte-1][self.last_action]=last_q_table+self.epsilon*(self.gain+self.gamma*current_q_table-last_q_table)
+		last_q_table=self.q_table[self.last_mise][self.last_carte-1][self.last_action]
+		current_q_table=self.q_table[current_mise][current_carte-1][current_action]
+		self.q_table[self.last_mise][self.last_carte-1][self.last_action]=last_q_table+self.epsilon*(self.gain+self.gamma*current_q_table-last_q_table)
 		
 		self.last_mise=current_mise
 		self.last_action=current_action
@@ -76,6 +80,7 @@ class JoueurB(Joueur.Joueur):
 		for i in range(0,4):
 			for j in range(0,10):
 				print(self.q_table[i][j])
+			print(" ")
 				
 	def ecrire_table(self):
 		fichier=open("ressources/table_bob.txt","w")
@@ -90,7 +95,9 @@ class JoueurB(Joueur.Joueur):
 		fichier=open("ressources/table_bob.txt","r")
 		data=fichier.read()
 		data=data.split()
-		i=j=k=0
+		i=0
+		j=0
+		k=0
 		for elem in data:
 			self.q_table[i][j][k]=float(elem)
 			i=(i+1)%4
