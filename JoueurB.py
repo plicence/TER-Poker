@@ -74,5 +74,26 @@ class JoueurB(Joueur.Joueur):
 	
 	def affiche_table(self):
 		for i in range(0,4):
-			for i in range(0,10):
-				print(self.q_table[i])
+			for j in range(0,10):
+				print(self.q_table[i][j])
+				
+	def ecrire_table(self):
+		fichier=open("ressources/table_bob.txt","w")
+		for i in range(0,4):
+			for j in range(0,10):
+				for k in range(0,2):
+					fichier.write(str(self.q_table[i][j][k]))
+					fichier.write(" ")
+		fichier.close()
+		
+	def lire_table(self):
+		fichier=open("ressources/table_bob.txt","r")
+		data=fichier.read()
+		data=data.split()
+		i=j=k=0
+		for elem in data:
+			self.q_table[i][j][k]=float(elem)
+			i=(i+1)%4
+			j=(j+1)%10
+			k=(k+1)%2
+		fichier.close()
