@@ -190,18 +190,20 @@ class Jeu:
 			self.joueurB.grid[(carteBTour1 - 1) * 4 + ac][acb] = self.joueurB.grid[(carteBTour1 - 1) * 4 + ac][acb] + 0.001 * (recompenseB + 0.001 * self.joueurB.grid[(self.joueurB.carte - 1) * 4 +ac1][acb1] - self.joueurB.grid[(carteBTour1 - 1) * 4 + ac][acb]) 
 
 
-	def jeu_simple_boucle_qlearning(self, n):
+	def jeu_simple_boucle_qlearning(self):
 		""""L'affichage des résltats se fait hors de la fonction de jeu car il n'y a que le resultat final qui nous interesse"""
-		for i in range(1,n):
+		print(self.joueurA.solde)
+		print(self.joueurB.solde)
+		while (self.joueurA.solde > 0 and self.joueurB.solde > 0) :
 			self.jeu_simple_qlearning()
-			if(self.joueurA.solde<=0):
-				print("Alice n'a plus de jetons pour continuer")
+			if(self.joueurA.solde <= 0):
+				print("A perd")
 				return 0
-			if(self.joueurB.solde<=0):
-				print("Bob n'a plus de jetons pour continuer")
+			if(self.joueurB.solde <= 0):
+				print("B perd")
 				return 0
-		print("Solde A: " + str(self.joueurA.solde))
-		print("Solde B: " + str(self.joueurB.solde))
+			print("Solde A: " + str(self.joueurA.solde))
+			print("Solde B: " + str(self.joueurB.solde))
 			
 	def jeu_interface_qlearning(self):
 		"""Jeu avec interface graphique"""
@@ -272,7 +274,7 @@ class Jeu:
 def main():
 
 	j=Jeu()
-	j.jeu_simple_boucle_qlearning(2000)
+	j.jeu_simple_boucle_qlearning()
 	j.joueurA.ecrit_grille()
 	j.joueurB.ecrit_grille()
 	

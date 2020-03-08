@@ -69,7 +69,7 @@ class JoueurB(Joueur.Joueur):
         with open("ressources/grilleB.txt", "w") as f:
             for i in range(0, 40):
                 for j in range(0, 2):
-                    if(j < 2):
+                    if(j < 1):
                         f.write(str(self.grid[i][j])+",")
                     else:
                         f.write(str(self.grid[i][j]))    
@@ -96,8 +96,6 @@ class JoueurB(Joueur.Joueur):
             action = randint(0, 1)
         else:
             indice = (self.carte - 1) * 4 + actionA
-            print("Indice :",indice)
-            print("Action : ", actionA)
             action = np.argmax(self.grid[indice])   
         return action
         
