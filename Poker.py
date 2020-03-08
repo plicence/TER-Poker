@@ -192,7 +192,7 @@ class Jeu:
 		ac1 = self.joueurA.takeAction(0) #Le joueur A joue
 		
 		#Q-Function
-		self.joueurA.grid[carteATour1 - 1][ac] = self.joueurA.grid[carteATour1 - 1][ac] + 0.1 * (recompenseA + 0.85 * self.joueurA.grid[self.joueurA.carte - 1][ac1] - self.joueurA.grid[carteATour1 - 1][ac])
+		self.joueurA.grid[carteATour1 - 1][ac] = self.joueurA.grid[carteATour1 - 1][ac] + 0.001 * (recompenseA + 0.001 * self.joueurA.grid[self.joueurA.carte - 1][ac1] - self.joueurA.grid[carteATour1 - 1][ac])
 			
 	def jeu_simple_boucle_qlearning(self, n):
 		""""L'affichage des résltats se fait hors de la fonction de jeu car il n'y a que le resultat final qui nous interesse"""
@@ -258,7 +258,7 @@ class Jeu:
 		ac1 = self.joueurA.takeAction(0) #Le joueur A joue
 		
 		#Q-Function
-		self.joueurA.grid[carteATour1 - 1][ac] = self.joueurA.grid[carteATour1 - 1][ac] + 0.1 * (recompenseA + 0.85 * self.joueurA.grid[self.joueurA.carte - 1][ac1] - self.joueurA.grid[carteATour1 - 1][ac])
+		self.joueurA.grid[carteATour1 - 1][ac] = self.joueurA.grid[carteATour1 - 1][ac] + 0.001 * (recompenseA + 0.001 * self.joueurA.grid[self.joueurA.carte - 1][ac1] - self.joueurA.grid[carteATour1 - 1][ac])
 		
 		#Affichage la QGrid
 		
