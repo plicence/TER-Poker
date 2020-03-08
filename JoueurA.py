@@ -125,8 +125,6 @@ class JoueurA(Joueur.Joueur):
         self.solde += Gain
         
     def GetRecompense(self): #calcul le gain effectif après jeu
-        print(self.solde)
-        print(self.Ancien_Solde)
         return self.solde - self.Ancien_Solde    
         
         

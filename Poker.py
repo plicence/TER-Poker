@@ -147,9 +147,9 @@ class Jeu:
 			self.pot += actionA
     
 		### B joue ###
-			acb = self.joueurB.takeAction(0.1, actionA)
+			acb = self.joueurB.takeAction(0.1, ac)
 			miseB = self.joueurB.ActionsVal(acb, actionA)
-			if(actionB == 0):### B Passe ###
+			if(miseB == 0):### B Passe ###
 				self.joueurA.ActualiserSolde(self.pot)
         
 			else:### B suis ###
@@ -173,8 +173,6 @@ class Jeu:
 		###trucs de qlearning pour le joueur a###
 		carteATour1 = self.joueurA.carte
 		carteBTour1 = self.joueurB.carte
-		print(self.joueurB.solde)
-		print(self.joueurB.Ancien_Solde)
 
 		recompenseA = self.joueurA.GetRecompense()
 		recompenseB = self.joueurB.GetRecompense()
@@ -188,7 +186,8 @@ class Jeu:
 		#Q-Function
 		self.joueurA.grid[carteATour1 - 1][ac] = self.joueurA.grid[carteATour1 - 1][ac] + 0.001 * (recompenseA + 0.001 * self.joueurA.grid[self.joueurA.carte - 1][ac1] - self.joueurA.grid[carteATour1 - 1][ac])
 		
-		self.joueurB.grid[(carteBTour1 - 1) * 4 + ac][acb] = self.joueurB.grid[(carteBTour1 - 1) * 4 + ac][acb] + 0.001 * (recompenseB + 0.001 * self.joueurB.grid[(self.joueurB.carte - 1) * 4 +ac1][acb1] - self.joueurB.grid[(carteBTour1 - 1) * 4 + ac][acb]) 
+		if (actionA > 0) :
+			self.joueurB.grid[(carteBTour1 - 1) * 4 + ac][acb] = self.joueurB.grid[(carteBTour1 - 1) * 4 + ac][acb] + 0.001 * (recompenseB + 0.001 * self.joueurB.grid[(self.joueurB.carte - 1) * 4 +ac1][acb1] - self.joueurB.grid[(carteBTour1 - 1) * 4 + ac][acb]) 
 
 
 	def jeu_simple_boucle_qlearning(self, n):
@@ -275,6 +274,6 @@ def main():
 	j=Jeu()
 	j.jeu_simple_boucle_qlearning(2000)
 	j.joueurA.ecrit_grille()
-	j.joueurB.ecrire_table()
+	j.joueurB.ecrit_grille()
 	
 main()

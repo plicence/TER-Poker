@@ -58,8 +58,8 @@ class JoueurB(Joueur.Joueur):
     def init_grille(self):
         with open("ressources/grilleB.txt", "r") as f:
             lignes = f.readlines()
-            for i in range(0, 39):
-                lignes[i] = list(map(float, lignes[i][:-1].split(",")))
+            for i in range(0, 40):
+                lignes[i] = list(map(float, lignes[i].split(",")))
                 print(lignes[i])
                 self.grid[i] =  lignes[i]
                 
@@ -96,6 +96,8 @@ class JoueurB(Joueur.Joueur):
             action = randint(0, 1)
         else:
             indice = (self.carte - 1) * 4 + actionA
+            print("Indice :",indice)
+            print("Action : ", actionA)
             action = np.argmax(self.grid[indice])   
         return action
         
@@ -110,11 +112,10 @@ class JoueurB(Joueur.Joueur):
         return val
     
     def ActualiserSolde(self, Gain):#actualise le solde du joueur B
+        self.Ancien_Solde = self.solde
         self.solde += Gain
         
     def GetRecompense(self): #calcul le gain effectif après jeu
-        print(self.solde)
-        print(self.Ancien_Solde)
         return self.solde - self.Ancien_Solde    
         
         
