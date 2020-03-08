@@ -118,7 +118,7 @@ class JoueurA(Joueur.Joueur):
         elif (action == 2):
             return 2
         elif (action == 3):
-            return 4     
+            return 3     
         return val    
     
     def ActualiserSolde(self, Gain):#actualise le solde du joueur A
