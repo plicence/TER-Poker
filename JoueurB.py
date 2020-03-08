@@ -60,7 +60,7 @@ class JoueurB(Joueur.Joueur):
             lignes = f.readlines()
             for i in range(0, 40):
                 lignes[i] = list(map(float, lignes[i].split(",")))
-                print(lignes[i])
+                #print(lignes[i])
                 self.grid[i] =  lignes[i]
                 
             
