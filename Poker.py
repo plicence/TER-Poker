@@ -142,58 +142,55 @@ class Jeu:
 	### A Joue ###
 		ac = self.joueurA.takeAction(0.1) #Le joueur A joue
 		actionA = self.joueurA.ActionsVal(ac) # Le joueurA mise une somme(0, 1, 2, 4) par rapport à l'action effectuée
+		#Ce nest pas action mais cest la mise
 		if(actionA > 0): # S'il mise on ajoute au pot
 			self.pot += actionA
     
 		### B joue ###
-			self.joueurB.choisir(actionA)
-			actionB = self.joueurB.jouer(actionA)
+			acb = self.joueurB.takeAction(0.1, actionA)
+			miseB = self.joueurB.ActionsVal(acb, actionA)
 			if(actionB == 0):### B Passe ###
 				self.joueurA.ActualiserSolde(self.pot)
-				self.joueurB.fin_tour(self.pot,0)
         
 			else:### B suis ###
-				self.pot += actionB
+				self.pot += miseB
  
 			### On retourne les cartes ###
 				if (self.carteA > self.carteB):
 					self.joueurA.ActualiserSolde(self.pot)
-					self.joueurB.fin_tour(self.pot,0)
 				elif (self.carteB > self.carteA):
-					self.joueurB.fin_tour(self.pot,1)
+					self.joueurB.ActualiserSolde(self.pot)
 				else:
 					self.joueurA.ActualiserSolde(actionA + 1)
-					self.joueurB.fin_tour(self.pot,2)
+					self.joueurB.ActualiserSolde(miseB + 1)
             
 		else:
-			actionB=0
-			self.joueurB.fin_tour(self.pot,1)
-		
-		
-		"""print("Pot: " + str(self.pot))
-		print("Carte A : " + str(self.joueurA.carte))
-		print("Carte B : " + str(self.joueurB.carte))
-		print("Mise A : " + str(actionA))
-		print("Mise B : " + str(actionB))
-		print("Solde A: " + str(self.joueurA.solde))
-		print("Solde B: " + str(self.joueurB.solde))
-		print(" ")"""
-		
+			miseB=0
+			self.joueurB.ActualiserSolde(self.pot)
+			
+		"""print("Pot: " + str(self.pot))		print("Carte A : " + str(self.joueurA.carte))		print("Carte B : " + str(self.joueurB.carte))		print("Mise A : " + str(actionA)) print("Mise B : " + str(actionB))print("Solde A: " + str(self.joueurA.solde))print("Solde B: " + str(self.joueurB.solde))print(" ")"""
 		
 		###trucs de qlearning pour le joueur a###
 		carteATour1 = self.joueurA.carte
 		carteBTour1 = self.joueurB.carte
-		
+		print(self.joueurB.solde)
+		print(self.joueurB.Ancien_Solde)
+
 		recompenseA = self.joueurA.GetRecompense()
+		recompenseB = self.joueurB.GetRecompense()
 
 		#TOUR T+1: on définit quelle serait l'action suivante
 		
 		self.tirer_Sans_Mise()
 		ac1 = self.joueurA.takeAction(0) #Le joueur A joue
+		acb1 = self.joueurB.takeAction(0, self.joueurA.ActionsValFake(ac1)) #Le joueur B joue en fonction de la mise de A 
 		
 		#Q-Function
 		self.joueurA.grid[carteATour1 - 1][ac] = self.joueurA.grid[carteATour1 - 1][ac] + 0.001 * (recompenseA + 0.001 * self.joueurA.grid[self.joueurA.carte - 1][ac1] - self.joueurA.grid[carteATour1 - 1][ac])
-			
+		
+		self.joueurB.grid[(carteBTour1 - 1) * 4 + ac][acb] = self.joueurB.grid[(carteBTour1 - 1) * 4 + ac][acb] + 0.001 * (recompenseB + 0.001 * self.joueurB.grid[(self.joueurB.carte - 1) * 4 +ac1][acb1] - self.joueurB.grid[(carteBTour1 - 1) * 4 + ac][acb]) 
+
+
 	def jeu_simple_boucle_qlearning(self, n):
 		""""L'affichage des résltats se fait hors de la fonction de jeu car il n'y a que le resultat final qui nous interesse"""
 		for i in range(1,n):

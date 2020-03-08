@@ -107,11 +107,26 @@ class JoueurA(Joueur.Joueur):
         elif (action == 3):
             return self.miser4()     
         return val
+
+    def ActionsValFake(self, action): #retourne l'argent à jouer selon l'action prise
+        val = None
+        self.Ancien_Solde = self.solde
+        if (action == 0):
+            return 0
+        elif (action == 1):
+            return 1
+        elif (action == 2):
+            return 2
+        elif (action == 3):
+            return 4     
+        return val    
     
     def ActualiserSolde(self, Gain):#actualise le solde du joueur A
         self.solde += Gain
         
     def GetRecompense(self): #calcul le gain effectif après jeu
+        print(self.solde)
+        print(self.Ancien_Solde)
         return self.solde - self.Ancien_Solde    
         
         
