@@ -122,7 +122,21 @@ class JoueurA(Joueur.Joueur):
     def GetRecompense(self): #calcul le gain effectif après jeu
         return self.solde - self.ancien_solde   
         
-        
+    
+    def Analyse(self, partie,iteration):
+        with open("ressources/AnalyseA/Partie"+ str(partie) + "AnalyA" + str(iteration) + ".txt", "w") as f:
+            for i in range(0, 10):
+                action = np.argmax(self.grid[i])  
+                if (action == 0):
+                    f.write("Carte:" + str(i) + ", Action : Passer") 
+                elif (action == 1):
+                    f.write("Carte:" + str(i) + ", Action : Miser 1")  
+                elif (action == 2):
+                    f.write("Carte:" + str(i) + ", Action : Miser 2")
+                elif (action == 3):
+                    f.write("Carte:" + str(i) + ", Action : Miser 4")          
+                f.write("\n")
+            
                  
         
         

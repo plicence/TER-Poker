@@ -111,8 +111,3 @@ class JoueurB(Joueur.Joueur):
     def GetRecompense(self): #calcul le gain effectif après jeu
         return self.solde - self.ancien_solde  
         
-        
-                 
-        
-        
-        

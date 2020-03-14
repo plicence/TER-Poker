@@ -199,17 +199,21 @@ class Jeu:
 			self.joueurB.grid[(carteBTour1 - 1) * 4 + ac][acb] = self.joueurB.grid[(carteBTour1 - 1) * 4 + ac][acb] + alpha * (recompenseB + gamma * self.joueurB.grid[(self.joueurB.carte - 1) * 4 +ac1][acb1] - self.joueurB.grid[(carteBTour1 - 1) * 4 + ac][acb]) 
 
 
-	def jeu_simple_boucle_qlearning(self):
+	def jeu_simple_boucle_qlearning(self, partie):
 		""""L'affichage des résltats se fait hors de la fonction de jeu car il n'y a que le resultat final qui nous interesse"""
 		iteration = 0
 		while (self.joueurA.solde > 0 and self.joueurB.solde > 0) :
 			self.jeu_simple_qlearning()
+			if((iteration%100) == 0):
+				self.joueurA.Analyse(partie, iteration)
 			iteration += 1
 		if(self.joueurA.solde <= 0):
 			print("A perd à l'itération:"+ str(iteration))
+			print("")
 			return 0
 		if(self.joueurB.solde <= 0):
 			print("B perd à l'iteration:"+ str(iteration))
+			print("")
 			return 0
 			#print("Solde A: " + str(self.joueurA.solde))
 			#print("Solde B: " + str(self.joueurB.solde))
@@ -285,8 +289,9 @@ def main():
 	j=Jeu()
 	j.joueurA.init_grille()
 	j.joueurB.init_grille()
-	for i in range (0,10) : 
-		j.jeu_simple_boucle_qlearning()
+	for i in range (0, 10) : 
+		print("Partie: " + str(i))
+		j.jeu_simple_boucle_qlearning(i)
 		j.reset_partie()
 		
 	j.joueurA.ecrit_grille()
