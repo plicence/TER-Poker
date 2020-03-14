@@ -144,18 +144,19 @@ class Jeu:
 		"""Jeu qlearning sans interface graphique"""
 		alpha = 0.001
 		gamma = 0.001
+		epsilon = 0
 	### Distribution des cartes ###
 		self.tirer()
 		
 	### A Joue ###
-		ac = self.joueurA.takeAction(0.1) #Le joueur A joue
+		ac = self.joueurA.takeAction(epsilon) #Le joueur A joue
 		actionA = self.joueurA.ActionsVal(ac) # Le joueurA mise une somme(0, 1, 2, 4) par rapport à l'action effectuée
 		#Ce nest pas action mais cest la mise
 		if(actionA > 0): # S'il mise on ajoute au pot
 			self.pot += actionA
     
 		### B joue ###
-			acb = self.joueurB.takeAction(0.1, ac)
+			acb = self.joueurB.takeAction(epsilon, ac)
 			miseB = self.joueurB.ActionsVal(acb, actionA)
 			if(miseB == 0):### B Passe ###
 				self.joueurA.ActualiserSolde(self.pot)
@@ -200,14 +201,16 @@ class Jeu:
 
 	def jeu_simple_boucle_qlearning(self):
 		""""L'affichage des résltats se fait hors de la fonction de jeu car il n'y a que le resultat final qui nous interesse"""
+		iteration = 0
 		while (self.joueurA.solde > 0 and self.joueurB.solde > 0) :
 			self.jeu_simple_qlearning()
-			if(self.joueurA.solde <= 0):
-				print("A perd")
-				return 0
-			if(self.joueurB.solde <= 0):
-				print("B perd")
-				return 0
+			iteration += 1
+		if(self.joueurA.solde <= 0):
+			print("A perd à l'itération:"+ str(iteration))
+			return 0
+		if(self.joueurB.solde <= 0):
+			print("B perd à l'iteration:"+ str(iteration))
+			return 0
 			#print("Solde A: " + str(self.joueurA.solde))
 			#print("Solde B: " + str(self.joueurB.solde))
 			
