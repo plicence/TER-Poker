@@ -10,6 +10,7 @@ class Joueur:
         self.carte = 1
         
     def mise_depart(self):
+        self.ancien_solde= self.solde
         self.solde -= 1
         return 1
     

@@ -22,8 +22,6 @@ class JoueurA(Joueur.Joueur):
     
     Action = Enum('Action', 'Passer Miser1 Miser2 Miser4')
     
-    Ancien_Solde = None
-    
     
     def init_grille(self):
         with open("ressources/grilleA.txt", "r") as f:
@@ -97,7 +95,6 @@ class JoueurA(Joueur.Joueur):
         
     def ActionsVal(self, action): #retourne l'argent à jouer selon l'action prise
         val = None
-        self.Ancien_Solde = self.solde
         if (action == 0):
             return self.passer()
         elif (action == 1):
@@ -110,7 +107,6 @@ class JoueurA(Joueur.Joueur):
 
     def ActionsValFake(self, action): #retourne l'argent à jouer selon l'action prise
         val = None
-        self.Ancien_Solde = self.solde
         if (action == 0):
             return 0
         elif (action == 1):
@@ -125,7 +121,7 @@ class JoueurA(Joueur.Joueur):
         self.solde += Gain
         
     def GetRecompense(self): #calcul le gain effectif après jeu
-        return self.solde - self.Ancien_Solde    
+        return self.solde - self.ancien_solde   
         
         
                  

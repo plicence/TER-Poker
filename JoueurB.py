@@ -51,9 +51,7 @@ class JoueurB(Joueur.Joueur):
     ]
     
     Action = Enum('Action', 'Passer Suivre')
-    
-    Ancien_Solde = None
-    
+      
     
     def init_grille(self):
         with open("ressources/grilleB.txt", "r") as f:
@@ -102,7 +100,6 @@ class JoueurB(Joueur.Joueur):
         
     def ActionsVal(self, action, miseA): #retourne l'argent à jouer selon l'action prise
         val = None
-        self.Ancien_Solde = self.solde
         if (action == 0):
             return self.passer()
         elif (action == 1):
@@ -110,11 +107,10 @@ class JoueurB(Joueur.Joueur):
         return val
     
     def ActualiserSolde(self, Gain):#actualise le solde du joueur B
-        self.Ancien_Solde = self.solde
         self.solde += Gain
         
     def GetRecompense(self): #calcul le gain effectif après jeu
-        return self.solde - self.Ancien_Solde    
+        return self.solde - self.ancien_solde  
         
         
                  
