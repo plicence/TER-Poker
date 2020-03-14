@@ -44,7 +44,6 @@ class JoueurA(Joueur.Joueur):
                 f.write("\n")
     def __init__(self):
         super(JoueurA, self).__init__()
-        self.init_grille()  
         
             
     def miser1(self):

@@ -73,8 +73,7 @@ class JoueurB(Joueur.Joueur):
                         f.write(str(self.grid[i][j]))    
                 f.write("\n")
     def __init__(self):
-        super(JoueurB, self).__init__()
-        self.init_grille()  
+        super(JoueurB, self).__init__()  
         
             
     def suivre(self, miseA):

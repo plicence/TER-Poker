@@ -16,6 +16,13 @@ class Jeu:
 		self.pot=0
 		#aff=-1
 		
+	def reset_partie(self):
+		self.joueurA.solde = 1000
+		self.joueurB.solde = 1000
+		self.carteA = 0
+		self.carteB = 0
+		self.pot = 0
+	
 	def charge_interface(self):
 		"""initialise la fenetre"""
 		#####Toujours appeler pygame.quit() avant la fin du programme si cette fonction est utilisée#####
@@ -271,10 +278,15 @@ class Jeu:
 		pygame.quit()
 			
 def main():
+	
+	j=Jeu()
+	j.joueurA.init_grille()
+	j.joueurB.init_grille()
 	for i in range (0,10) : 
-		j=Jeu()
 		j.jeu_simple_boucle_qlearning()
-		j.joueurA.ecrit_grille()
-		j.joueurB.ecrit_grille()
+		j.reset_partie()
+		
+	j.joueurA.ecrit_grille()
+	j.joueurB.ecrit_grille()
 	
 main()
