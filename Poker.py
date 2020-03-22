@@ -3,6 +3,7 @@ import JoueurB
 import Interface
 import random
 from time import time
+import matplotlib.pyplot as plt
 
 import pygame # a supprimer
 	
@@ -11,9 +12,13 @@ class Jeu:
 		self.joueurA=JoueurA.JoueurA()
 		self.joueurB=JoueurB.JoueurB()
 		random.seed(time())
-		self.carteA=0
-		self.carteB=0
-		self.pot=0
+		self.carteA = 0
+		self.carteB = 0
+		self.pot = 0
+		self.listeA = []
+		self.listeB = []
+		self.countBluff = 0
+		self.totalPlay = 0
 		#aff=-1
 		
 	def reset_partie(self):
@@ -22,7 +27,7 @@ class Jeu:
 		self.carteA = 0
 		self.carteB = 0
 		self.pot = 0
-	
+
 	def charge_interface(self):
 		"""initialise la fenetre"""
 		#####Toujours appeler pygame.quit() avant la fin du programme si cette fonction est utilisée#####
@@ -142,10 +147,11 @@ class Jeu:
 			
 	def jeu_simple_qlearning(self):
 		"""Jeu qlearning sans interface graphique"""
-		alpha = 0.001
+		alpha = 0.0001
 		gamma = 0.001
 		epsilon = 0
 	### Distribution des cartes ###
+		acb = 2
 		self.tirer()
 		
 	### A Joue ###
@@ -180,6 +186,11 @@ class Jeu:
 		"""print("Pot: " + str(self.pot))		print("Carte A : " + str(self.joueurA.carte))		print("Carte B : " + str(self.joueurB.carte))		print("Mise A : " + str(actionA)) print("Mise B : " + str(actionB))print("Solde A: " + str(self.joueurA.solde))print("Solde B: " + str(self.joueurB.solde))print(" ")"""
 		
 		###trucs de qlearning pour le joueur a###
+		if(self.joueurA.carte <= 4 and ac >= 2):
+			self.countBluff += 1 
+		self.totalPlay += 1
+		self.listeA.append(ac)
+		self.listeB.append(acb)
 		carteATour1 = self.joueurA.carte
 		carteBTour1 = self.joueurB.carte
 
@@ -187,25 +198,25 @@ class Jeu:
 		recompenseB = self.joueurB.GetRecompense()
 
 		#TOUR T+1: on définit quelle serait l'action suivante
-		
+		"""
 		self.tirer_Sans_Mise()
 		ac1 = self.joueurA.takeAction(0) #Le joueur A joue
 		acb1 = self.joueurB.takeAction(0, self.joueurA.ActionsValFake(ac1)) #Le joueur B joue en fonction de la mise de A 
-		
+		"""
 		#Q-Function
-		self.joueurA.grid[carteATour1 - 1][ac] = self.joueurA.grid[carteATour1 - 1][ac] + alpha * (recompenseA + gamma * self.joueurA.grid[self.joueurA.carte - 1][ac1] - self.joueurA.grid[carteATour1 - 1][ac])
-		
+		#self.joueurA.grid[carteATour1 - 1][ac] = self.joueurA.grid[carteATour1 - 1][ac] + alpha * (recompenseA + gamma * self.joueurA.grid[self.joueurA.carte - 1][ac1] - self.joueurA.grid[carteATour1 - 1][ac])
+		self.joueurA.grid[carteATour1 - 1][ac] = self.joueurA.grid[carteATour1 - 1][ac] + alpha * (recompenseA - self.joueurA.grid[carteATour1 - 1][ac])
 		if (actionA > 0) :
-			self.joueurB.grid[(carteBTour1 - 1) * 4 + ac][acb] = self.joueurB.grid[(carteBTour1 - 1) * 4 + ac][acb] + alpha * (recompenseB + gamma * self.joueurB.grid[(self.joueurB.carte - 1) * 4 +ac1][acb1] - self.joueurB.grid[(carteBTour1 - 1) * 4 + ac][acb]) 
-
+			#self.joueurB.grid[(carteBTour1 - 1) * 4 + ac][acb] = self.joueurB.grid[(carteBTour1 - 1) * 4 + ac][acb] + alpha * (recompenseB + gamma * self.joueurB.grid[(self.joueurB.carte - 1) * 4 +ac1][acb1] - self.joueurB.grid[(carteBTour1 - 1) * 4 + ac][acb]) 
+			self.joueurB.grid[(carteBTour1 - 1) * 4 + ac][acb] = self.joueurB.grid[(carteBTour1 - 1) * 4 + ac][acb] + alpha * (recompenseB - self.joueurB.grid[(carteBTour1 - 1) * 4 + ac][acb]) 
 
 	def jeu_simple_boucle_qlearning(self, partie):
 		""""L'affichage des résltats se fait hors de la fonction de jeu car il n'y a que le resultat final qui nous interesse"""
 		iteration = 0
 		while (self.joueurA.solde > 0 and self.joueurB.solde > 0) :
 			self.jeu_simple_qlearning()
-			if((iteration%100) == 0):
-				self.joueurA.Analyse(partie, iteration)
+			#if((iteration%100) == 0):
+				#self.joueurA.Analyse(partie, iteration)
 			iteration += 1
 		if(self.joueurA.solde <= 0):
 			print("A perd à l'itération:"+ str(iteration))
@@ -283,18 +294,55 @@ class Jeu:
 			self.jeu_interface_qlearning()
 			
 		pygame.quit()
+		
+		
+		
+	def graphhistA(self):
+		plt.title("Diagramme des actions de A")
+		plt.hist(self.listeA, bins = 10,color = 'yellow', edgecolor = 'red')
+		plt.xlabel('Action')
+		plt.ylabel('Nombres')
+		plt.xticks([0, 1, 2, 3], ["Passer", "Miser 1", "Miser 2", "Miser 3"])
+		plt.savefig("ressources/Analyse/JoueurA")
+		plt.show()
+	
+	def graphhistB(self):
+		plt.title("Diagramme des actions de B")
+		plt.hist(self.listeB, bins = 10,color = 'yellow', edgecolor = 'red')
+		plt.xlabel('Action')
+		plt.ylabel('Nombres')
+		plt.xticks([2, 0, 1], ["A passe", "Passer", "Suivre"])
+		plt.savefig("ressources/Analyse/JoueurB")
+		plt.show()
+		
+	def graphlineA(self):
+		plt.title("Diagramme des actions de A au cours du temps")
+		plt.plot(self.listeA)
+		plt.ylabel('Action')
+		plt.yticks([0, 1, 2, 3], ["Passer", "Miser 1", "Miser 2", "Miser 3"])
+		plt.savefig("ressources/Analyse/JoueurALigne")
+		plt.show()	
+		
+		
 			
 def main():
 	
 	j=Jeu()
 	j.joueurA.init_grille()
 	j.joueurB.init_grille()
-	for i in range (0, 10) : 
+	for i in range (0, 50) : 
 		print("Partie: " + str(i))
 		j.jeu_simple_boucle_qlearning(i)
 		j.reset_partie()
 		
 	j.joueurA.ecrit_grille()
 	j.joueurB.ecrit_grille()
+	j.graphhistA()
+	j.graphhistB()
+	print("Bluff"+ str(j.countBluff)+ "sur" + str(j.totalPlay) )
+	
+	#j.graphlineA()
+	
+	
 	
 main()
