@@ -4,6 +4,7 @@ import Interface
 import random
 from time import time
 import matplotlib.pyplot as plt
+import numpy as np
 
 import pygame # a supprimer
 	
@@ -198,17 +199,17 @@ class Jeu:
 		recompenseB = self.joueurB.GetRecompense()
 
 		#TOUR T+1: on définit quelle serait l'action suivante
-		"""
+		
 		self.tirer_Sans_Mise()
 		ac1 = self.joueurA.takeAction(0) #Le joueur A joue
 		acb1 = self.joueurB.takeAction(0, self.joueurA.ActionsValFake(ac1)) #Le joueur B joue en fonction de la mise de A 
-		"""
+		
 		#Q-Function
-		#self.joueurA.grid[carteATour1 - 1][ac] = self.joueurA.grid[carteATour1 - 1][ac] + alpha * (recompenseA + gamma * self.joueurA.grid[self.joueurA.carte - 1][ac1] - self.joueurA.grid[carteATour1 - 1][ac])
-		self.joueurA.grid[carteATour1 - 1][ac] = self.joueurA.grid[carteATour1 - 1][ac] + alpha * (recompenseA - self.joueurA.grid[carteATour1 - 1][ac])
+		self.joueurA.grid[carteATour1 - 1][ac] = self.joueurA.grid[carteATour1 - 1][ac] + alpha * (recompenseA + gamma * self.joueurA.grid[self.joueurA.carte - 1][ac1] - self.joueurA.grid[carteATour1 - 1][ac])
+		#self.joueurA.grid[carteATour1 - 1][ac] = self.joueurA.grid[carteATour1 - 1][ac] + alpha * (recompenseA - self.joueurA.grid[carteATour1 - 1][ac])
 		if (actionA > 0) :
-			#self.joueurB.grid[(carteBTour1 - 1) * 4 + ac][acb] = self.joueurB.grid[(carteBTour1 - 1) * 4 + ac][acb] + alpha * (recompenseB + gamma * self.joueurB.grid[(self.joueurB.carte - 1) * 4 +ac1][acb1] - self.joueurB.grid[(carteBTour1 - 1) * 4 + ac][acb]) 
-			self.joueurB.grid[(carteBTour1 - 1) * 4 + ac][acb] = self.joueurB.grid[(carteBTour1 - 1) * 4 + ac][acb] + alpha * (recompenseB - self.joueurB.grid[(carteBTour1 - 1) * 4 + ac][acb]) 
+			self.joueurB.grid[(carteBTour1 - 1) * 4 + ac][acb] = self.joueurB.grid[(carteBTour1 - 1) * 4 + ac][acb] + alpha * (recompenseB + gamma * self.joueurB.grid[(self.joueurB.carte - 1) * 4 +ac1][acb1] - self.joueurB.grid[(carteBTour1 - 1) * 4 + ac][acb]) 
+			#self.joueurB.grid[(carteBTour1 - 1) * 4 + ac][acb] = self.joueurB.grid[(carteBTour1 - 1) * 4 + ac][acb] + alpha * (recompenseB - self.joueurB.grid[(carteBTour1 - 1) * 4 + ac][acb]) 
 
 	def jeu_simple_boucle_qlearning(self, partie):
 		""""L'affichage des résltats se fait hors de la fonction de jeu car il n'y a que le resultat final qui nous interesse"""
@@ -334,7 +335,9 @@ def main():
 		print("Partie: " + str(i))
 		j.jeu_simple_boucle_qlearning(i)
 		j.reset_partie()
-		
+	
+	j.joueurA.grid = np.around(j.joueurA.grid, 4)	
+	j.joueurB.grid = np.around(j.joueurB.grid, 4)
 	j.joueurA.ecrit_grille()
 	j.joueurB.ecrit_grille()
 	j.graphhistA()
