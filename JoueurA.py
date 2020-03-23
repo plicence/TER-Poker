@@ -38,9 +38,9 @@ class JoueurA(Joueur.Joueur):
             for i in range(0, 10):
                 for j in range(0, 4):
                     if(j <3):
-                        f.write(str(self.grid[i][j]).rjust(7)+",")
+                        f.write(str(self.grid[i][j]).rjust(9)+",")
                     else:
-                        f.write(str(self.grid[i][j]).rjust(7))    
+                        f.write(str(self.grid[i][j]).rjust(9))    
                 f.write("\n")
     def __init__(self):
         super(JoueurA, self).__init__()

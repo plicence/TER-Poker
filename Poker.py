@@ -336,8 +336,8 @@ def main():
 		j.jeu_simple_boucle_qlearning(i)
 		j.reset_partie()
 	
-	j.joueurA.grid = np.around(j.joueurA.grid, 4)	
-	j.joueurB.grid = np.around(j.joueurB.grid, 4)
+	j.joueurA.grid = np.around(j.joueurA.grid, 5)	
+	j.joueurB.grid = np.around(j.joueurB.grid, 5)
 	j.joueurA.ecrit_grille()
 	j.joueurB.ecrit_grille()
 	j.graphhistA()

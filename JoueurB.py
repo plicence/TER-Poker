@@ -67,11 +67,12 @@ class JoueurB(Joueur.Joueur):
         with open("ressources/grilleB.txt", "w") as f:
             for i in range(0, 40):
                 for j in range(0, 2):
-                    if(j < 1):
-                        f.write(str(self.grid[i][j]).rjust(7)+",")
+                    if(j <1):
+                        f.write(str(self.grid[i][j]).rjust(9)+",")
                     else:
-                        f.write(str(self.grid[i][j]).rjust(7))    
+                        f.write(str(self.grid[i][j]).rjust(9))    
                 f.write("\n")
+    
     def __init__(self):
         super(JoueurB, self).__init__()  
         
