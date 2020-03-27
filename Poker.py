@@ -5,6 +5,7 @@ import random
 from time import time
 import matplotlib.pyplot as plt
 import numpy as np
+import Stats
 
 import pygame # a supprimer
 	
@@ -151,6 +152,8 @@ class Jeu:
 		alpha = 0.0001
 		gamma = 0.001
 		epsilon = 0
+		
+		res=0
 	### Distribution des cartes ###
 		acb = 2
 		self.tirer()
@@ -167,6 +170,7 @@ class Jeu:
 			miseB = self.joueurB.ActionsVal(acb, actionA)
 			if(miseB == 0):### B Passe ###
 				self.joueurA.ActualiserSolde(self.pot)
+				res=1
         
 			else:### B suis ###
 				self.pot += miseB
@@ -174,17 +178,23 @@ class Jeu:
 			### On retourne les cartes ###
 				if (self.carteA > self.carteB):
 					self.joueurA.ActualiserSolde(self.pot)
+					res=1
 				elif (self.carteB > self.carteA):
 					self.joueurB.ActualiserSolde(self.pot)
+					res=-1
 				else:
 					self.joueurA.ActualiserSolde(actionA + 1)
 					self.joueurB.ActualiserSolde(miseB + 1)
+					res=0
             
 		else:
 			miseB=0
 			self.joueurB.ActualiserSolde(self.pot)
+			res=-1
 			
 		"""print("Pot: " + str(self.pot))		print("Carte A : " + str(self.joueurA.carte))		print("Carte B : " + str(self.joueurB.carte))		print("Mise A : " + str(actionA)) print("Mise B : " + str(actionB))print("Solde A: " + str(self.joueurA.solde))print("Solde B: " + str(self.joueurB.solde))print(" ")"""
+		
+		stats.update(self, ac, acb, 0)
 		
 		###trucs de qlearning pour le joueur a###
 		if(self.joueurA.carte <= 4 and ac >= 2):
@@ -324,28 +334,32 @@ class Jeu:
 		plt.savefig("ressources/Analyse/JoueurALigne")
 		plt.show()	
 		
-		
-			
-def main():
-	
+stats=Stats.tables(1000)	
+def main():		
 	j=Jeu()
-	j.joueurA.init_grille()
-	j.joueurB.init_grille()
-	for i in range (0, 50) : 
-		print("Partie: " + str(i))
-		j.jeu_simple_boucle_qlearning(i)
+	#j.joueurA.init_grille()
+	#j.joueurB.init_grille()
+	for i in range (0, stats.nb_parties):
+		j.jeu_simple_boucle_qlearning(0)
 		j.reset_partie()
+		stats.fin_partie(j.countBluff)
 	
 	j.joueurA.grid = np.around(j.joueurA.grid, 5)	
 	j.joueurB.grid = np.around(j.joueurB.grid, 5)
-	j.joueurA.ecrit_grille()
-	j.joueurB.ecrit_grille()
-	j.graphhistA()
-	j.graphhistB()
+	#j.joueurA.ecrit_grille()
+	#j.joueurB.ecrit_grille()
+	
+	for i in range(0,6):
+		stats.show_actions_alice(int(i*stats.nb_parties/5-1))
+		stats.show_actions_bob(int(i*stats.nb_parties/5-1))
+
+	stats.show_nb_bluffs()
+	stats.show_nb_tours()
+	#j.graphhistA()
+	#j.graphhistB()
 	print("Bluff"+ str(j.countBluff)+ "sur" + str(j.totalPlay) )
 	
 	#j.graphlineA()
-	
 	
 	
 main()
