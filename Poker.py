@@ -147,12 +147,11 @@ class Jeu:
 		else:
 			return 0
 			
-	def jeu_simple_qlearning(self):
+	def jeu_simple_qlearning(self, i):
 		"""Jeu qlearning sans interface graphique"""
-		alpha = 0.0001
-		gamma = 0.001
-		epsilon = 0
-		
+		alpha = 0.1 #(stats.nb_parties-i)/stats.nb_parties
+		gamma = 0
+		epsilon = 0 #(stats.nb_parties-i)/stats.nb_parties
 		res=0
 	### Distribution des cartes ###
 		acb = 2
@@ -225,7 +224,7 @@ class Jeu:
 		""""L'affichage des résltats se fait hors de la fonction de jeu car il n'y a que le resultat final qui nous interesse"""
 		iteration = 0
 		while (self.joueurA.solde > 0 and self.joueurB.solde > 0) :
-			self.jeu_simple_qlearning()
+			self.jeu_simple_qlearning(partie)
 			#if((iteration%100) == 0):
 				#self.joueurA.Analyse(partie, iteration)
 			iteration += 1
@@ -334,20 +333,22 @@ class Jeu:
 		plt.savefig("ressources/Analyse/JoueurALigne")
 		plt.show()	
 		
-stats=Stats.tables(1000)	
+stats=Stats.tables(15)	
 def main():		
 	j=Jeu()
-	#j.joueurA.init_grille()
-	#j.joueurB.init_grille()
+	j.joueurA.init_grille()
+	j.joueurB.init_grille()
 	for i in range (0, stats.nb_parties):
-		j.jeu_simple_boucle_qlearning(0)
+		j.jeu_simple_boucle_qlearning(i)
+		print(str(i))
 		j.reset_partie()
 		stats.fin_partie(j.countBluff)
+		#j.joueurA.ecrit_grille()
+		#j.joueurB.ecrit_grille()
 	
 	j.joueurA.grid = np.around(j.joueurA.grid, 5)	
 	j.joueurB.grid = np.around(j.joueurB.grid, 5)
-	#j.joueurA.ecrit_grille()
-	#j.joueurB.ecrit_grille()
+
 	
 	for i in range(0,6):
 		stats.show_actions_alice(int(i*stats.nb_parties/5-1))
