@@ -232,71 +232,91 @@ class Jeu:
 			
 	def jeu_interface_qlearning(self):
 		"""Jeu avec interface graphique"""
+		#initialisation
+		alpha = 0.0001
+		gamma = 0.001
+		epsilon = 0
 		self.tirer()
 		self.aff.charge_cartes()
 		self.aff.place_cartes()
-		ac = self.joueurA.takeAction(0.1) #Le joueur A joue
-		actionA = self.joueurA.ActionsVal(ac) # Le joueurA mise une somme(0, 1, 2, 4) par rapport à l'action effectuée
-		if(actionA > 0): # S'il mise on ajoute au pot
-			self.pot += actionA
-			print("A mise" + str(actionA) )
-			actionB = self.joueurB.jouer(actionA) # Le joueur B joue
-    
-			if(actionB == 0):
+		acb = 2
+		
+		#Déroulement du tour
+		ac = self.joueurA.takeAction(0.1) 
+		miseA = self.joueurA.ActionsVal(ac)
+		
+		####Si Alice mise####
+		if(miseA > 0): 
+			self.pot += miseA
+			print("A mise " + str(miseA) )
+			acb = self.joueurB.takeAction(epsilon, ac)
+			miseB = self.joueurB.ActionsVal(acb, miseA)
+			
+			####Si Bob passe####
+			if(miseB == 0):
 				print("B passe")
-				self.joueurA.ActualiserSolde(self.pot) # S'il passe le joueur A gagne 
-        
-			else: # S'il mise on vérifie qui a la plus grande valeur de carte
-        
-				self.pot += actionB
-				print("B mise " + str(actionB))
+				self.joueurA.ActualiserSolde(self.pot)
+			
+			####Si Bob mise####
+			else:        
+				self.pot += miseB
+				print("B suis")
  
+				####Vérification des cartes####
 				if (self.carteA > self.carteB):
-					self.joueurA.ActualiserSolde(self.pot) #Le joueur A gagne
+					self.joueurA.ActualiserSolde(self.pot)
 				elif (self.carteB > self.carteA):
-					self.joueurB.solde += self.pot #Le joueur B gagne
-				else: #Si les joueurs ont une égalité, chacun reprend son argent
-					self.joueurA.ActualiserSolde(actionA + 1)
-					self.joueurB.solde += (actionB + 1)    
-            
+					self.joueurB.solde += self.pot
+				else:
+					self.joueurA.ActualiserSolde(miseA + 1)
+					self.joueurB.solde += (miseB + 1)    
+        
+		####Si A passe####
 		else:
 			print("Joueur A passe")
 			self.joueurB.solde += self.pot #Si le joueur A passe, le joueur B gagne
 
+		####Affichage du résultat####
+		self.aff.retourne_cartes()
 		print("Pot: " + str(self.pot))
-		print("Carte A : " + str(self.joueurA.carte))
-		print("Carte B : " + str(self.joueurB.carte))
 		print("Solde A: " + str(self.joueurA.solde))
 		print("Solde B: " + str(self.joueurB.solde))
 		
+		####Calculs pour le Qlearning####
+		
+		#Enregistrement des variables
+		if(self.joueurA.carte <= 4 and ac >= 2):
+			self.countBluff += 1 
+		self.totalPlay += 1
+		self.listeA.append(ac)
+		self.listeB.append(acb)
 		carteATour1 = self.joueurA.carte
 		carteBTour1 = self.joueurB.carte
-		
+		recompenseB = self.joueurB.GetRecompense()
 		recompenseA = self.joueurA.GetRecompense()
-		self.aff.retourne_cartes()
-
-		#TOUR T+1: on définit quelle serait l'action suivante
 		
+		#Simulation du tour suivant
 		self.tirer_Sans_Mise()
-		ac1 = self.joueurA.takeAction(0) #Le joueur A joue
+		action_a_suiv = self.joueurA.takeAction(0) #Le joueur A joue
+		action_b_suiv = self.joueurB.takeAction(0, self.joueurA.ActionsValFake(action_a_suiv))
 		
 		#Q-Function
-		self.joueurA.grid[carteATour1 - 1][ac] = self.joueurA.grid[carteATour1 - 1][ac] + 0.001 * (recompenseA + 0.001 * self.joueurA.grid[self.joueurA.carte - 1][ac1] - self.joueurA.grid[carteATour1 - 1][ac])
-		
-		#Affichage la QGrid
-		
-		for s in range(0, 10):
-			print(self.joueurA.grid[s])
-		
+		self.joueurA.grid[carteATour1 - 1][ac] = self.joueurA.grid[carteATour1 - 1][ac] + 0.001 * (recompenseA + 0.001 * self.joueurA.grid[self.joueurA.carte - 1][action_a_suiv] - self.joueurA.grid[carteATour1 - 1][ac])
+		if (miseA > 0) :
+			self.joueurB.grid[(carteBTour1 - 1) * 4 + ac][acb] = self.joueurB.grid[(carteBTour1 - 1) * 4 + ac][acb] + alpha * (recompenseB + gamma * self.joueurB.grid[(self.joueurB.carte - 1) * 4 +action_a_suiv][action_b_suiv] - self.joueurB.grid[(carteBTour1 - 1) * 4 + ac][acb]) 
+
 	def jeu_interface_boucle_qlearning(self, n):
 		"""jeu avec interface répété n fois sans réinitialisation des joueurs"""
 		self.charge_interface()
-		for i in range(1,n):
+		for i in range(0,n):
 			self.jeu_interface_qlearning()
-			
-		pygame.quit()
-		
-		
+			if(self.joueurA.solde <= 0):
+				print("A perd à l'itération:"+ str(i))
+				break
+			if(self.joueurA.solde <= 0):
+				print("A perd à l'itération:"+ str(i))
+				break
+		pygame.quit()	
 		
 	def graphhistA(self):
 		plt.title("Diagramme des actions de A")
@@ -331,9 +351,9 @@ def main():
 	j=Jeu()
 	j.joueurA.init_grille()
 	j.joueurB.init_grille()
-	for i in range (0, 50) : 
+	for i in range (0, 3) : 
 		print("Partie: " + str(i))
-		j.jeu_simple_boucle_qlearning(i)
+		j.jeu_interface_boucle_qlearning(5)
 		j.reset_partie()
 	
 	j.joueurA.grid = np.around(j.joueurA.grid, 5)	
@@ -342,7 +362,7 @@ def main():
 	j.joueurB.ecrit_grille()
 	j.graphhistA()
 	j.graphhistB()
-	print("Bluff"+ str(j.countBluff)+ "sur" + str(j.totalPlay) )
+	print("Bluff"+ str(j.countBluff)+ " sur " + str(j.totalPlay) )
 	
 	#j.graphlineA()
 	
