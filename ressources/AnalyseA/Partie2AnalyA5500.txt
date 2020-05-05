@@ -1,0 +1,10 @@
+Carte:0, Action : Passer
+Carte:1, Action : Passer
+Carte:2, Action : Passer
+Carte:3, Action : Miser 1
+Carte:4, Action : Miser 1
+Carte:5, Action : Miser 1
+Carte:6, Action : Miser 1
+Carte:7, Action : Miser 4
+Carte:8, Action : Miser 1
+Carte:9, Action : Miser 2

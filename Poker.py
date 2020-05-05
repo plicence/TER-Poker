@@ -333,7 +333,7 @@ class Jeu:
 		plt.savefig("ressources/Analyse/JoueurALigne")
 		plt.show()	
 		
-stats=Stats.tables(15)	
+stats=Stats.tables(500)	
 def main():		
 	j=Jeu()
 	j.joueurA.init_grille()
@@ -343,8 +343,8 @@ def main():
 		print(str(i))
 		j.reset_partie()
 		stats.fin_partie(j.countBluff)
-		#j.joueurA.ecrit_grille()
-		#j.joueurB.ecrit_grille()
+		j.joueurA.ecrit_grille()
+		j.joueurB.ecrit_grille()
 	
 	j.joueurA.grid = np.around(j.joueurA.grid, 5)	
 	j.joueurB.grid = np.around(j.joueurB.grid, 5)
